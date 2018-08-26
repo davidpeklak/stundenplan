@@ -20,3 +20,12 @@ lazy val stundenplanValidation = (project in file("validation"))
     organization := "davidpeklak",
     libraryDependencies += Specs2 % "test"
   ).dependsOn(stundenplanEntities)
+
+/**
+  * Defines the business-logic
+  */
+lazy val stundenPlanLogic = (project in file("logic"))
+  .settings(
+    name := "stundenplan-logic",
+    organization := "davidpeklak"
+  )
