@@ -6,17 +6,26 @@ import org.specs2.matcher.MatchResult
 import org.specs2.specification.core.SpecStructure
 
 class LogicSpec extends Specification {
-  def is: SpecStructure = s2"""
+  def is: SpecStructure =
+    s2"""
 
 The logic must
   remember who the teacher is       $setAndGetTeacher
+
     """
 
+  private def newLogic: Logic = {
+    val state = new State
+    new Logic(state)
+  }
+
   def setAndGetTeacher: MatchResult[_] = {
-     val teacher = new Person("The Teacher")
+    val teacher = Person("The Teacher")
 
-    Logic.setTeacher(teacher)
+    val logic = newLogic
 
-    Logic.getTeacher mustEqual  Some(teacher)
+    logic.setTeacher(teacher)
+
+    logic.getTeacher mustEqual Some(teacher)
   }
 }

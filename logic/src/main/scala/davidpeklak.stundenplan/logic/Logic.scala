@@ -2,9 +2,9 @@ package davidpeklak.stundenplan.logic
 
 import davidpeklak.stundenplan.person.Person
 
-object Logic {
+class Logic(state: State) {
 
-  var teacher: Option[Person] = None
+  import state._
 
   def setTeacher(person: Person): Unit = {
     teacher = Some(person)
