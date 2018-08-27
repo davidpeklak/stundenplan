@@ -4,3 +4,4 @@ target/
 entities/target
 validation/target
 logic/target
+*/.DS_Store

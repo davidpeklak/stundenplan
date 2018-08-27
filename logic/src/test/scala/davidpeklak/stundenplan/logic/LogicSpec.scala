@@ -11,7 +11,7 @@ class LogicSpec extends Specification {
 
 The logic must
   remember who the teacher is       $setAndGetTeacher
-
+  must store the teacher
     """
 
   private def newLogic: Logic = {
