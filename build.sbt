@@ -1,6 +1,7 @@
 scalaVersion := "2.12.6"
 
 val Specs2 = "org.specs2" %% "specs2-core" % "4.3.4"
+val Specs2Mock = "org.specs2" %% "specs2-mock" % "4.3.4"
 
 /**
   * Defines the data entities, without any logic
@@ -28,5 +29,8 @@ lazy val stundenplanLogic = (project in file("logic"))
   .settings(
     name := "stundenplan-logic",
     organization := "davidpeklak",
-    libraryDependencies += Specs2 % "test"
+    libraryDependencies ++= Seq(
+      Specs2 % "test",
+      Specs2Mock % "test"
+    )
   ).dependsOn(stundenplanEntities)
