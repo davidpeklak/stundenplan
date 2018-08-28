@@ -34,3 +34,13 @@ lazy val stundenplanLogic = (project in file("logic"))
       Specs2Mock % "test"
     )
   ).dependsOn(stundenplanEntities)
+
+/**
+  * Implements Storage as FileStorage
+  */
+lazy val stundenplanFileStorage = (project in file("filestorage"))
+  .settings(
+    name := "stundenplan-filestorage",
+    organization := "davidpeklak",
+    libraryDependencies += Specs2 % "test"
+  ).dependsOn(stundenplanLogic)
