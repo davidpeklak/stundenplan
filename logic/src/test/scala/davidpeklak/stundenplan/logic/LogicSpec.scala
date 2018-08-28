@@ -23,7 +23,6 @@ The logic must
 
     val logic = new Logic(state, storageMock)
 
-
     def setAndGetTeacher: MatchResult[_] = {
       val teacher = Person("The Teacher")
 
