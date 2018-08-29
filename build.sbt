@@ -1,3 +1,4 @@
+
 scalaVersion := "2.12.6"
 
 val Specs2 = "org.specs2" %% "specs2-core" % "4.3.4"
@@ -43,4 +44,12 @@ lazy val stundenplanFileStorage = (project in file("filestorage"))
     name := "stundenplan-filestorage",
     organization := "davidpeklak",
     libraryDependencies += Specs2 % "test"
+  ).dependsOn(stundenplanLogic)
+
+lazy val stundenplanPlayFrontend = (project in file("playfrontend"))
+  .enablePlugins(PlayScala)
+  .settings(
+    name := "stundenplan-playfrontend",
+    organization := "davidpeklak",
+    libraryDependencies += guice
   ).dependsOn(stundenplanLogic)
