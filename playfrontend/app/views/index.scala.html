@@ -1,5 +1,10 @@
-@()
+@import davidpeklak.stundenplan.person.Person
 
-@main("Welcome to Play") {
-  <h1>Welcome to Play!</h1>
+@(teacherForm: Form[Person])(implicit messages: Messages)
+
+@main("Willkommen beim Stundenplan") {
+    <h1>Willkommen beim Stundenplan!</h1>
+    <div>Hier die Form</div>
+    <div>@person(teacherForm)</div>
+    <div>Hier lecker Ende</div>
 }

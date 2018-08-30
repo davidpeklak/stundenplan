@@ -1,0 +1,6 @@
+@import davidpeklak.stundenplan.person.Person
+
+@(teacherForm: Form[Person])(implicit messages: Messages)
+@helper.form(action = routes.HomeController.teacherPost()) {
+    @helper.inputText(teacherForm("name"))
+}

@@ -46,10 +46,13 @@ lazy val stundenplanFileStorage = (project in file("filestorage"))
     libraryDependencies += Specs2 % "test"
   ).dependsOn(stundenplanLogic)
 
+/**
+  * A frontend based on the play framework
+  */
 lazy val stundenplanPlayFrontend = (project in file("playfrontend"))
   .enablePlugins(PlayScala)
   .settings(
     name := "stundenplan-playfrontend",
     organization := "davidpeklak",
     libraryDependencies += guice
-  ).dependsOn(stundenplanLogic)
+  ).dependsOn(stundenplanLogic, stundenplanFileStorage)
