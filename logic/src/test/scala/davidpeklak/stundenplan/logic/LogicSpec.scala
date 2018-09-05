@@ -1,6 +1,6 @@
 package davidpeklak.stundenplan.logic
 
-import davidpeklak.stundenplan.person.Person
+import davidpeklak.stundenplan.person.{Person, PersonId}
 import davidpeklak.stundenplan.storage.Storage
 import org.specs2.Specification
 import org.specs2.matcher.MatchResult
@@ -12,8 +12,11 @@ class LogicSpec extends Specification with Mockito {
     s2"""
 
 The logic must
-  remember who the teacher is       ${new LogicFixture().setAndGetTeacher}
-  must store the teacher            ${new LogicFixture().storeTeacher}
+  call the storage to create a Person                                ${new LogicFixture().callStorageToCreatePerson}
+  throw an exception if the storage creates the same PersonId twice  ${new LogicFixture().throwIfTheStorageReturnsTheSameIdTwice}
+  remember a person that has been created                            ${new LogicFixture().rememberPerson}
+  remember the teacher                                               ${new LogicFixture().rememberTeacher}
+  call the storage to set the teacher                                ${new LogicFixture().callStorageToSetTeacher}
     """
 
   class LogicFixture {
@@ -23,20 +26,60 @@ The logic must
 
     val logic = new Logic(state, storageMock)
 
-    def setAndGetTeacher: MatchResult[_] = {
-      val teacher = Person("The Teacher")
+    def callStorageToCreatePerson: MatchResult[_] = {
+      val name = "Karli"
 
-      logic.setTeacher(teacher)
+      storageMock.createPerson(name) returns Person(PersonId(1), name)
 
-      logic.getTeacher mustEqual Some(teacher)
+      logic.createPerson(name)
+
+      there was one(storageMock).createPerson(name)
     }
 
-    def storeTeacher: MatchResult[_] = {
-      val teacher = Person("The Teacher")
+    def throwIfTheStorageReturnsTheSameIdTwice: MatchResult[_] = {
+      val name = "Karli"
+      val alwaysTheSamePersonId = PersonId(1)
 
-      logic.setTeacher(teacher)
+      storageMock.createPerson(name) returns Person(alwaysTheSamePersonId, name)
 
-      there was one(storageMock).storeTeacher(teacher)
+      logic.createPerson(name)
+      logic.createPerson(name) must throwA[IllegalStateException]
+    }
+
+    def rememberPerson: MatchResult[_] = {
+      val name = "Karli"
+
+      storageMock.createPerson(name) returns Person(PersonId(1), name)
+
+      val person = logic.createPerson(name)
+
+      val rememberedPerson = logic.getPerson(person.id)
+
+      rememberedPerson must beSome(person)
+    }
+
+    def rememberTeacher: MatchResult[_] = {
+      val name = "Teacher"
+
+      storageMock.createPerson(name) returns Person(PersonId(1), name)
+
+      val teacher = logic.createPerson(name)
+
+      logic.setTeacher(teacher.id)
+
+      logic.getTeacher must beSome(teacher)
+    }
+
+    def callStorageToSetTeacher: MatchResult[_] = {
+      val name = "Teacher"
+
+      storageMock.createPerson(name) returns Person(PersonId(1), name)
+
+      val teacher = logic.createPerson(name)
+
+      logic.setTeacher(teacher.id)
+
+      there was one(storageMock).setTeacher(teacher.id)
     }
   }
 

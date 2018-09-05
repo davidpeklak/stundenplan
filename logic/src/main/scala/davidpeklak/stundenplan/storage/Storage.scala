@@ -1,10 +1,12 @@
 package davidpeklak.stundenplan.storage
 
-import davidpeklak.stundenplan.person.Person
+import davidpeklak.stundenplan.person.{Person, PersonId}
 import davidpeklak.stundenplan.logic.State
 
 trait Storage {
-  def storeTeacher(person: Person): Unit
+  def createPerson(name: String): Person
+
+  def setTeacher(personId: PersonId): Unit
 
   def load: State
 }

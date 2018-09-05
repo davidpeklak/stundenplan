@@ -1,7 +1,10 @@
 package davidpeklak.stundenplan.logic
 
-import davidpeklak.stundenplan.person.Person
+import davidpeklak.stundenplan.person.{Person, PersonId}
 
 class State {
-  var teacher: Option[Person] = None
+
+  var persons: Map[PersonId, Person] = Map()
+
+  var teacherOpt: Option[PersonId] = None
 }
