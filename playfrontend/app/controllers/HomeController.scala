@@ -38,7 +38,7 @@ class HomeController @Inject()(mcc: MessagesControllerComponents)
    * a path of `/`.
    */
   def index() = Action { implicit request: MessagesRequest[AnyContent] =>
-    Ok(views.html.index(personForm))
+    Ok(views.html.index(personForm)).withHeaders()
   }
 
   def teacherPost = Action(parse.form(personForm)) { implicit request =>
@@ -50,7 +50,14 @@ class HomeController @Inject()(mcc: MessagesControllerComponents)
   def teacher = Action {
     logic.getTeacher match {
       case None => Ok("No teacher set")
-      case Some(t) => Ok(s"Hello ${t.name}")
+      case Some(t) => {
+        import play.api.libs.json._
+
+        implicit val residentWrites = Json.writes[Person]
+        val teacherJson = Json.toJson(t)
+
+        Ok(teacherJson)
+      }
     }
   }
 }
