@@ -46,6 +46,8 @@ lazy val stundenplanFileStorage = (project in file("filestorage"))
     libraryDependencies += Specs2 % "test"
   ).dependsOn(stundenplanLogic)
 
+val json4s = "org.json4s" %% "json4s-native" % "3.6.1"
+
 /**
   * A frontend based on the play framework
   */
@@ -54,5 +56,6 @@ lazy val stundenplanPlayFrontend = (project in file("playfrontend"))
   .settings(
     name := "stundenplan-playfrontend",
     organization := "davidpeklak",
-    libraryDependencies += guice
+    libraryDependencies ++= Seq(guice, json4s)
   ).dependsOn(stundenplanLogic, stundenplanFileStorage)
+
