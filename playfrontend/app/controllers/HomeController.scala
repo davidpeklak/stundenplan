@@ -11,6 +11,9 @@ import play.api.mvc._
 import util.EitherUtil._
 
 
+import scala.concurrent.{ExecutionContext, Future}
+
+
 @Singleton
 class HomeController @Inject()(mcc: MessagesControllerComponents)
   extends MessagesAbstractController(mcc) {
@@ -23,20 +26,16 @@ class HomeController @Inject()(mcc: MessagesControllerComponents)
     Ok(views.html.index()).withHeaders()
   }
 
-  def setTeacherPut(id: Int) = Action { implicit request =>
-    val pid = PersonId(id)
-    logic.setTeacher(pid)
-    val teacher = logic.getPerson(pid).get
-    Ok(teacher.toJson)
-  }
-
-  def updatePersonPut(id: Int) = Action { implicit request =>
-    val pid = PersonId(id)
-    val person = personFromJson(request.body.asText.get)
-    if (pid != person.id) throw new IllegalArgumentException("URL id does not match person id in body")
-    // logic.updatePerson(person)
-    val sosoPerson = logic.getPerson(person.id).get
-    Ok(sosoPerson.toJson)
+  def getPerson(id: Int) = Action { implicit request =>
+    val result = for {
+      person <- logic.getPerson(PersonId(id)).toRight(NotFound(s"A Person with id $id does not exist"))
+    } yield {
+      Ok(person.toJson).withHeaders(
+        CONTENT_TYPE -> JSON,
+        "EsJusto" -> "ybueno"
+      )
+    }
+    result.both
   }
 
   def createPersonPost() = Action { implicit request =>
@@ -47,6 +46,48 @@ class HomeController @Inject()(mcc: MessagesControllerComponents)
       Created(person.toJson)
     }
     result.both
+  }
+
+  private def json4s(implicit ec: ExecutionContext): BodyParser[org.json4s.JValue] = json4s(parse.DefaultMaxTextLength)
+
+  private def json4s(maxLength: Int)(implicit ec: ExecutionContext): BodyParser[org.json4s.JValue] = parse.when(
+    _.contentType.exists(m => m.equalsIgnoreCase("text/json") || m.equalsIgnoreCase("application/json")),
+    tolerantJson4s(maxLength),
+    _ => Future(UnsupportedMediaType("Expecting text/json or application/json body")
+  ))
+
+  private def tolerantJson4s(maxLength: Int)(implicit ec: ExecutionContext): BodyParser[org.json4s.JValue] = {
+  parse.tolerantText(maxLength).map(string => org.json4s.native.JsonMethods.parse(string))
+  }
+
+  def updatePersonPut(id: Int) = Action(json4s(scala.concurrent.ExecutionContext.Implicits.global)) { implicit request =>
+    val pid = PersonId(id)
+    val person = personFromJson(request.body)
+    if (pid != person.id) throw new IllegalArgumentException("URL id does not match person id in body")
+    logic.updatePerson(person)
+    Ok(person.toJson)
+  }
+
+  def deletePerson(id: Int) = Action { implicit request =>
+    logic.deletePerson(PersonId(id))
+    Ok("ok")
+  }
+
+  def addStudent(id: Int) = Action { implicit request =>
+    logic.addStudent(PersonId(id))
+    Ok("ok")
+  }
+
+  def removeStudent(id: Int) = Action { implicit request =>
+    logic.removeStudent(PersonId(id))
+    Ok("ok")
+  }
+
+  def setTeacherPut(id: Int) = Action { implicit request =>
+    val pid = PersonId(id)
+    logic.setTeacher(pid)
+    val teacher = logic.getPerson(pid).get
+    Ok(teacher.toJson)
   }
 
   def getTeacher = Action {

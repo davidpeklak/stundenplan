@@ -12,10 +12,22 @@ GET    /teacher                    controllers.HomeController.getTeacher
 PUT    /teacher/:id                controllers.HomeController.setTeacherPut(id: Int)
 
 + nocsrf
+GET    /person/:id                 controllers.HomeController.getPerson(id: Int)
+
++ nocsrf
 PUT    /person/:id                 controllers.HomeController.updatePersonPut(id: Int)
 
 + nocsrf
 POST    /person                    controllers.HomeController.createPersonPost()
+
++ nocsrf
+DELETE /person/:id                 controllers.HomeController.deletePerson(id: Int)
+
++ nocsrf
+PUT    /student/:id                controllers.HomeController.addStudent(id: Int)
+
++ nocsrf
+DELETE /student/:id                controllers.HomeController.removeStudent(id: Int)
 
 
 # Map static resources from the /public folder to the /assets URL path

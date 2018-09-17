@@ -1,4 +1,6 @@
-package models
+package davidpeklak.stundenplan.serde
+
+import java.io.InputStream
 
 import davidpeklak.stundenplan.person.{Person, PersonId}
 import org.json4s.DefaultFormats
@@ -24,6 +26,11 @@ package object person {
 
   def personFromJsonString(str: String): Person = {
     val jValue = parse(str)
+    personFromJson(jValue)
+  }
+
+  def personFromJasonInputStream(is: InputStream): Person = {
+    val jValue = parse(is)
     personFromJson(jValue)
   }
 
